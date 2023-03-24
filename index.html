@@ -1,65 +1,61 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat WebSocket</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js" 
-    integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous">
-    </script>
-</head>
-<body>
+    <script
+      src="https://code.jquery.com/jquery-3.6.4.js"
+      integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
     <header>
-        <form id="form">
-            <input type="text" name="" id="msg" autofocus autocomplete="off" placeholder="Digite uma mensagem">
-            <button type="submit" id="btn1">Enviar</button>
-        </form>
+      <form id="form">
+        <input
+          type="text"
+          name=""
+          id="msg"
+          autofocus
+          autocomplete="off"
+          placeholder="Digite uma mensagem"
+        />
+        <button type="submit" id="btn1">Enviar</button>
+      </form>
     </header>
-    
+
     <ul id="mensagens"></ul>
     <div id="status"></div>
 
     <script>
-        $(function(){
-            const socket = io()
-            socket.nickname= ''
+      $(() => {
+        const socket = io();
 
-            $('form').submit(function(evt){
-                if(socket.nickname === ''){
-                    socket.nickname = $('#msg').val();
-                    socket.emit('login', socket.nickname)
+        nameUser = prompt('Obs: após colocar o seu nickname, pressione enviar\nDigite seu nickname: ');
+        
+        socket.nickname = "";
 
-                    $('#msg').keypress(function(evt){
-                    socket.emit('status', `${socket.nickname} está digitando...`)
-                    })
-                    
-                    $('#msg').keyup(function(evt){
-                    socket.emit('status', '')
-                    })
+        $("#form").submit((evt) => {
+          if (socket.nickname === "") {
 
-                    socket.on('status', function(msg) {
-                    $('#status').html(msg)        
-                     })
+            socket.nickname = nameUser;
+            socket.emit("login", nameUser);
+          } else {
+            socket.emit("chat msg", $("#msg").val());
+          }
 
-                } else{
-                    socket.emit('chat msg', $('#msg').val())
-                }
+          $("#msg").val("");
+          return false;
+        });
 
-                $('#msg').val('')
-                return false
-            })
-
-            socket.on('chat msg', function(msg) {
-                $('#mensagens').append($('<li>').text(msg))        
-            })
-
-           
-
-        })
-
+        socket.on("chat msg", function (msg) {
+          $("#mensagens").append($("<li>").text(msg));
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
