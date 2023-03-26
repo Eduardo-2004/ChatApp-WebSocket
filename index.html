@@ -58,9 +58,11 @@
               };
             };
 
-            $("#msg").keyup(debounce((evt) => {
-              socket.emit("status", "");
-            }, 500));
+            $("#msg").keyup(
+              debounce((evt) => {
+                socket.emit("status", "");
+              }, 500)
+            );
 
             socket.on("status", function (msg) {
               $("#status").html(msg);

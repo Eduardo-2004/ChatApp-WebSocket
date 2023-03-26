@@ -35,8 +35,6 @@ serverSocket.on('connection', (socket) => {
     socket.on('status', (msg) => {
       socket.broadcast.emit('status', msg)
   })
-
-
 });
 
 
