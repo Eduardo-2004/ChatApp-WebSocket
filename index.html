@@ -35,15 +35,36 @@
       $(() => {
         const socket = io();
 
-        nameUser = prompt('Obs: após colocar o seu nickname, pressione enviar\nDigite seu nickname: ');
-        
+        nameUser = prompt(
+          "Obs: após colocar o seu nickname, pressione enviar\nDigite seu nickname: "
+        );
+
         socket.nickname = "";
 
         $("#form").submit((evt) => {
           if (socket.nickname === "") {
-
             socket.nickname = nameUser;
             socket.emit("login", nameUser);
+
+            $("#msg").keypress((evt) => {
+              socket.emit("status", `${nameUser} está digitando...`);
+            });
+
+            const debounce = (func, delay) => {
+              let timer;
+              return function () {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, arguments), delay);
+              };
+            };
+
+            $("#msg").keyup(debounce((evt) => {
+              socket.emit("status", "");
+            }, 500));
+
+            socket.on("status", function (msg) {
+              $("#status").html(msg);
+            });
           } else {
             socket.emit("chat msg", $("#msg").val());
           }

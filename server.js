@@ -29,8 +29,13 @@ serverSocket.on('connection', (socket) => {
 
     socket.on('chat msg', function(msg){
         console.log(`Msg recebida do cliente ${socket.nickname}: ${msg}`);
-        serverSocket.emit('chat msg', msg);
+        serverSocket.emit('chat msg', `${socket.nickname}: ${msg}`);
     })
+
+    socket.on('status', (msg) => {
+      socket.broadcast.emit('status', msg)
+  })
+
 
 });
 
